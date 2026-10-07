@@ -111,6 +111,12 @@ Los resultados son similares, por lo que ambas alternativas permiten comprobar e
 
 La principal diferencia se encuentra en la forma de priorizar los movimientos durante la construcción de la ruta.
 
+**BSA del estudio**
+<img width="522" height="458" alt="bas" src="https://github.com/user-attachments/assets/d0b99ec8-6fba-4759-8821-6196018e539d" />
+**BSA con prioridad de avanzar**
+<img width="522" height="458" alt="alternative_bsa" src="https://github.com/user-attachments/assets/00fbabf6-f965-4e30-be23-fca997591783" />
+
+
 El **BSA del estudio** tiende a priorizar inicialmente la limpieza de los bordes de las zonas,
 lo que puede provocar que queden pequeñas islas o zonas aisladas para limpiar posteriormente.
 
@@ -197,6 +203,8 @@ Por ejemplo, se podría reducir la velocidad cuando el robot esté cerca de pare
 En esta sección se muestra el funcionamiento final del robot y se explica el proceso completo de planificación y ejecución de la trayectoria.
 
 ### Vídeo
+
+
 
 
 
