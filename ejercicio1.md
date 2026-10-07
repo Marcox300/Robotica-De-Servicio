@@ -113,6 +113,7 @@ La principal diferencia se encuentra en la forma de priorizar los movimientos du
 
 **BSA del estudio**
 <img width="522" height="458" alt="bas" src="https://github.com/user-attachments/assets/d0b99ec8-6fba-4759-8821-6196018e539d" />
+
 **BSA con prioridad de avanzar**
 <img width="522" height="458" alt="alternative_bsa" src="https://github.com/user-attachments/assets/00fbabf6-f965-4e30-be23-fca997591783" />
 
