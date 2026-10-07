@@ -209,7 +209,10 @@ En esta sección se muestra el funcionamiento final del robot y se explica el pr
 ### Vídeo
 
 
-
+<video width="640" height="360" controls>
+  <source src="limpiando_2.mp4" type="video/mp4">
+  Tu navegador no soporta el video.
+</video>
 
 
 El vídeo debe mostrar el funcionamiento completo del sistema:
