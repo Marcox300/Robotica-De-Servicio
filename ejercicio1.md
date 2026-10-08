@@ -40,6 +40,8 @@ A partir de estas correspondencias se obtiene la transformación necesaria para 
 
 La transformación se define mediante:
 
+La transformación de coordenadas `XY` a coordenadas de píxel se define mediante:
+
 $$
 \begin{bmatrix}
 Pixel_X \\
@@ -55,9 +57,9 @@ Y
 XY\_TO\_PIXEL\_OFFSET
 $$
 
-donde `XY_TO_PIXEL` es una matriz de $2 \times 2$ y `XY_TO_PIXEL_OFFSET` es un vector de desplazamiento.
+donde `XY_TO_PIXEL` es una matriz de `2 × 2` y `XY_TO_PIXEL_OFFSET` es un vector de desplazamiento.
 
-Para obtener ambas matrices se utilizan los puntos de correspondencia de la tabla. Para cada punto se relacionan sus coordenadas $(X,Y)$ con sus coordenadas en píxeles $(Pixel_X,Pixel_Y)$ mediante las ecuaciones:
+Para obtener ambas matrices se utilizan los puntos de correspondencia de la tabla. Para cada punto se relacionan sus coordenadas `(X,Y)` con sus coordenadas en píxeles `(Pixel_X, Pixel_Y)` mediante las ecuaciones:
 
 $$
 Pixel_X = aX + bY + t_X
@@ -69,7 +71,7 @@ $$
 
 Los coeficientes de estas ecuaciones se calculan mediante **mínimos cuadrados**, utilizando los puntos de correspondencia disponibles. Este método permite obtener la transformación que mejor se ajusta al conjunto de puntos, minimizando el error entre las posiciones de píxel conocidas y las calculadas.
 
-Los coeficientes $a$, $b$, $c$ y $d$ forman la matriz `XY_TO_PIXEL`, mientras que $t_X$ y $t_Y$ forman `XY_TO_PIXEL_OFFSET`.
+Los coeficientes `a`, `b`, `c` y `d` forman la matriz `XY_TO_PIXEL`, mientras que `t_X` y `t_Y` forman `XY_TO_PIXEL_OFFSET`.
 
 Para convertir las coordenadas de píxel de nuevo al sistema `XY`, se aplica la transformación inversa:
 
