@@ -1,7 +1,5 @@
 # Robot Aspiradora Localizada
 
-PRUEBA_MATH
-
 ## 1. Objetivo
 
 El objetivo de este proyecto es programar una aspiradora robótica de gama alta para que sea capaz de limpiar una casa de manera eficiente y autónoma.
