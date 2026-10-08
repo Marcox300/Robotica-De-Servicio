@@ -40,6 +40,97 @@ A partir de estas correspondencias se obtiene la transformación necesaria para 
 
 Esta transformación permite relacionar la posición proporcionada por el sistema de localización del robot con una posición concreta dentro del mapa utilizado para la planificación.
 
+La transformación de coordenadas XY a coordenadas de píxel se define mediante una transformación lineal con desplazamiento:
+
+XY_TO_PIXEL
+\begin{bmatrix}
+X \
+Y
+\end{bmatrix}
++
+XY_TO_PIXEL_OFFSET
+$$
+
+donde XY_TO_PIXEL es una matriz de transformación de $2 \times 2$ y XY_TO_PIXEL_OFFSET es un vector de desplazamiento de dos componentes.
+
+De forma desarrollada, la transformación puede expresarse como:
+
+$$
+Pixel_X = aX + bY + t_X
+$$
+
+$$
+Pixel_Y = cX + dY + t_Y
+$$
+
+Por tanto, los parámetros que se deben obtener son los seis coeficientes:
+
+$$
+a,\ b,\ c,\ d,\ t_X,\ t_Y
+$$
+
+Para calcular estos parámetros se utilizan los puntos de correspondencia conocidos. Para cada punto se dispone de sus coordenadas en el sistema del robot $(X_i,Y_i)$ y de sus coordenadas correspondientes en la imagen $(Pixel_{X_i},Pixel_{Y_i})$.
+
+Las ecuaciones para cada correspondencia son:
+
+$$
+Pixel_{X_i} = aX_i + bY_i + t_X
+$$
+
+$$
+Pixel_{Y_i} = cX_i + dY_i + t_Y
+$$
+
+Estas ecuaciones se pueden agrupar en un sistema matricial. Para cada punto se construye una fila de la matriz de coordenadas:
+
+$$
+A =
+\begin{bmatrix}
+X_1 & Y_1 & 1 \
+X_2 & Y_2 & 1 \
+\vdots & \vdots & \vdots \
+X_n & Y_n & 1
+\end{bmatrix}
+$$
+
+y las coordenadas de píxel se agrupan en:
+
+$$
+B =
+\begin{bmatrix}
+Pixel_{X_1} & Pixel_{Y_1} \
+Pixel_{X_2} & Pixel_{Y_2} \
+\vdots & \vdots \
+Pixel_{X_n} & Pixel_{Y_n}
+\end{bmatrix}
+$$
+
+De esta forma, los parámetros de la transformación se obtienen resolviendo:
+
+$$
+A C \approx B
+$$
+
+donde:
+
+$$
+C =
+\begin{bmatrix}
+a & c \
+b & d \
+t_X & t_Y
+\end{bmatrix}
+$$
+
+Como se dispone de más puntos de los estrictamente necesarios para determinar la transformación, el sistema se resuelve mediante mínimos cuadrados, buscando los valores de los parámetros que minimizan el error entre las coordenadas de píxel conocidas y las coordenadas calculadas.
+
+Una vez obtenida la matriz $C$, sus cuatro primeros coeficientes permiten construir XY_TO_PIXEL, mientras que los dos últimos corresponden a XY_TO_PIXEL_OFFSET.
+
+Para calcular la transformación inversa, es decir, pasar de coordenadas de píxel a coordenadas del sistema XY, se despeja la posición original:
+
+XY_TO_PIXEL_OFFSET
+\right)
+$$
 Para calcular la matriz de transformación, utilizamos inicialmente los seis primeros puntos de 
 correspondencia para obtener una primera estimación de dicha matriz. A continuación, 
 aplicamos la transformación calculada a los dos puntos restantes y comprobamos si sus coordenadas transformadas coinciden aproximadamente con las posiciones en píxeles indicadas.
