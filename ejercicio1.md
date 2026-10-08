@@ -264,7 +264,7 @@ tengan que ser recuperadas posteriormente. Estas zonas pueden aparecer como pequ
 Este comportamiento llevó a plantear si era conveniente utilizar únicamente el algoritmo del estudio o investigar otras alternativas. Desde el punto de vista de una aspiradora
 resulta poco intuitivo que una sección aparentemente terminada tenga que abandonarse y posteriormente volver a ella para limpiar una pequeña zona pendiente.
 
-Por este motivo se investigaron diferentes estrategias de recorrido y se desarrolló una variante del BSA con **prioridad de avance**,
+Por este motivo se investigaron diferentes estrategias de recorrido y se desarrolló una variante del BSA con prioridad de avance,
 buscando favorecer trayectorias más continuas y reducir la aparición de estas zonas aisladas.
 
 Aunque finalmente ambas estrategias son capaces de completar la limpieza, la comparación permitió comprobar que la forma de priorizar los movimientos
@@ -281,11 +281,11 @@ Por ello, no se consideró suficiente realizar únicamente el cálculo teórico 
 Fue necesario comprobar experimentalmente si la escala obtenida se correspondía realmente con el entorno.
 
 Para realizar esta comprobación se comparó visualmente el tamaño representado del robot con elementos reales del mapa,
-especialmente **puertas, pasillos y zonas de paso**. Moviendo el robot por estas zonas y comparando las dimensiones observadas con las dimensiones teóricas esperadas,
+especialmente puertas, pasillos y zonas de paso. Moviendo el robot por estas zonas y comparando las dimensiones observadas con las dimensiones teóricas esperadas,
 fue posible comprobar si la escala utilizada resultaba razonable.
 
 Este procedimiento permitió detectar diferencias que no eran evidentes únicamente mediante el cálculo matemático. Finalmente, tras realizar diferentes pruebas,
-se estableció el tamaño de **33 × 33 píxeles por celda**, obteniendo una representación que se ajustaba mejor al comportamiento observado del robot.
+se estableció el tamaño de 33 × 33 píxeles por celda, obteniendo una representación que se ajustaba mejor al comportamiento observado del robot.
 
 Esta comprobación práctica resulta especialmente importante porque un pequeño error en la estimación del tamaño puede tener un efecto considerable sobre la planificación:
 una cuadrícula demasiado grande puede bloquear zonas transitables, mientras que una demasiado pequeña puede generar trayectorias demasiado próximas a obstáculos.
@@ -319,7 +319,7 @@ Esta estrategia permitiría complementar la ruta generada por BSA y reducir las 
 
 Una posible mejora sería optimizar conjuntamente la trayectoria generada por el BSA y el mecanismo de recuperación.
 
-El objetivo sería **reducir el número de giros y la longitud total de la ruta**, evitando desplazamientos innecesarios.
+El objetivo sería reducir el número de giros y la longitud total de la ruta, evitando desplazamientos innecesarios.
 En algunas situaciones, el BSA puede generar pequeñas islas de celdas sin limpiar (como se aprecia en el apartado de BSA) que posteriormente obligan al robot a volver sobre sus pasos.
 
 Una estrategia de recuperación más inteligente podría integrar estas zonas en la trayectoria principal mediante barridos,
