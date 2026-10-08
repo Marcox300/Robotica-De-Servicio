@@ -221,15 +221,81 @@ El movimiento se divide en dos fases:
 1. **Corrección de orientación.**
 2. **Avance hacia el siguiente punto.**
 
-Se priorizan giros suaves y controlados para mejorar la precisión y reducir los errores de los actuadores.
+Durante el desplazamiento pueden aparecer pequeños errores en la posición del robot, principalmente asociados a la velocidad lineal.
+Aunque se indique una determinada velocidad de avance, el movimiento real del robot no es perfectamente constante, lo que puede provocar pequeñas desviaciones respecto a la trayectoria teórica.
 
-El controlador reactivo comprueba continuamente la posición del robot y corrige posibles desviaciones durante el desplazamiento.
+Para reducir este efecto, el controlador reactivo comprueba continuamente la posición del robot y realiza las correcciones necesarias durante el desplazamiento.
+De esta forma, aunque puedan existir pequeñas diferencias entre la trayectoria calculada y el movimiento real, el robot puede corregir progresivamente su posición antes de alcanzar el siguiente punto.
 
 La estrategia utilizada es:
 
 **Orientación correcta → avance → corrección → siguiente punto**
 
 ## 5. Problemas
+
+Durante el desarrollo del proyecto surgieron varios problemas relacionados principalmente con la representación del mapa,
+la discretización de la cuadrícula, el comportamiento del algoritmo BSA y la correspondencia entre las dimensiones teóricas del robot y las dimensiones observadas en el entorno.
+
+### 5.1. Discretización inicial de la cuadrícula
+
+Inicialmente se planteó realizar directamente la conversión entre la posición real del robot y la celda de la cuadrícula utilizando el tamaño fijo de **34 × 34 píxeles**.
+Es decir, la posición del robot se transformaba directamente en una fila y una columna de la matriz y, de forma inversa, una celda se convertía directamente en una posición del entorno.
+
+Aunque este método funcionaba para el tamaño de cuadrícula utilizado inicialmente, presentaba una limitación importante:
+la conversión dependía directamente del tamaño de las celdas. Si posteriormente se modificaba el tamaño de la cuadrícula, era necesario modificar también las conversiones entre posición y celda.
+
+Para evitar esta dependencia, se decidió separar ambos problemas. Primero se realiza la transformación entre las coordenadas reales `(X,Y)` y
+los píxeles del mapa mediante la matriz `XY_TO_PIXEL`. Posteriormente, a partir de las coordenadas de píxel obtenidas, se realiza la discretización de la imagen en celdas.
+
+De esta forma, el tamaño de la cuadrícula puede modificarse sin tener que recalcular la transformación entre el sistema real y el mapa.
+Esto proporciona una representación más flexible y permite probar diferentes tamaños de celda para ajustar mejor la discretización al tamaño físico del robot.
+
+### 5.2. Comportamiento del BSA y aparición de islas
+
+Otro de los problemas encontrados fue el comportamiento del **BSA del estudio** durante la limpieza.
+
+Aunque el algoritmo consigue recorrer las zonas transitables, su estrategia de exploración puede provocar que algunas pequeñas zonas queden aisladas y
+tengan que ser recuperadas posteriormente. Estas zonas pueden aparecer como pequeñas "islas" dentro de una sección que aparentemente ya había sido explorada.
+
+Este comportamiento llevó a plantear si era conveniente utilizar únicamente el algoritmo del estudio o investigar otras alternativas. Desde el punto de vista de una aspiradora
+resulta poco intuitivo que una sección aparentemente terminada tenga que abandonarse y posteriormente volver a ella para limpiar una pequeña zona pendiente.
+
+Por este motivo se investigaron diferentes estrategias de recorrido y se desarrolló una variante del BSA con **prioridad de avance**,
+buscando favorecer trayectorias más continuas y reducir la aparición de estas zonas aisladas.
+
+Aunque finalmente ambas estrategias son capaces de completar la limpieza, la comparación permitió comprobar que la forma de priorizar los movimientos
+tiene una influencia importante en la distribución de la trayectoria.
+
+### 5.3. Ajuste entre el tamaño del robot y el mapa
+
+Otro problema importante fue determinar qué tamaño debía tener una celda de la cuadrícula para representar correctamente las dimensiones del robot.
+
+Inicialmente se utilizó un tamaño de **34 × 34 píxeles**,
+pero durante las pruebas se observó que algunas zonas que físicamente parecían transitables quedaban clasificadas como demasiado estrechas en la representación discretizada.
+
+Por ello, no se consideró suficiente realizar únicamente el cálculo teórico del tamaño del robot a partir de las dimensiones del mapa.
+Fue necesario comprobar experimentalmente si la escala obtenida se correspondía realmente con el entorno.
+
+Para realizar esta comprobación se comparó visualmente el tamaño representado del robot con elementos reales del mapa,
+especialmente **puertas, pasillos y zonas de paso**. Moviendo el robot por estas zonas y comparando las dimensiones observadas con las dimensiones teóricas esperadas,
+fue posible comprobar si la escala utilizada resultaba razonable.
+
+Este procedimiento permitió detectar diferencias que no eran evidentes únicamente mediante el cálculo matemático. Finalmente, tras realizar diferentes pruebas,
+se estableció el tamaño de **33 × 33 píxeles por celda**, obteniendo una representación que se ajustaba mejor al comportamiento observado del robot.
+
+Esta comprobación práctica resulta especialmente importante porque un pequeño error en la estimación del tamaño puede tener un efecto considerable sobre la planificación:
+una cuadrícula demasiado grande puede bloquear zonas transitables, mientras que una demasiado pequeña puede generar trayectorias demasiado próximas a obstáculos.
+
+### 5.4. Relación entre precisión y flexibilidad
+
+Los problemas anteriores mostraron que no era conveniente fijar todos los parámetros del sistema a una única discretización.
+
+La transformación `XY_TO_PIXEL` permite mantener independiente la relación entre el entorno real y la imagen,
+mientras que el tamaño de la cuadrícula se puede modificar posteriormente según las necesidades del algoritmo de planificación.
+
+Esta separación facilita realizar pruebas con diferentes tamaños de celda y permite ajustar la representación del mapa sin afectar al sistema de localización ni a la transformación de coordenadas.
+
+En conjunto, los problemas encontrados durante el desarrollo permitieron mejorar la estructura del sistema y hacer que la representación utilizada por el BSA fuese menos dependiente de valores fijados inicialmente.
 
 ## 6. Mejoras futuras
 
