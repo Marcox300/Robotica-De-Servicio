@@ -40,57 +40,57 @@ A partir de estas correspondencias se obtiene la transformación necesaria para 
 
 La transformación se define mediante:
 
-La transformación de coordenadas `XY` a coordenadas de píxel se define mediante:
+```math
+Pixel_X = aX + bY + t_X
+```
 
-$$
-\begin{bmatrix}
+```math
+Pixel_Y = cX + dY + t_Y
+```
+
+donde `a`, `b`, `c` y `d` forman la matriz `XY_TO_PIXEL`, mientras que `t_X` y `t_Y` forman `XY_TO_PIXEL_OFFSET`.
+
+Por tanto, la transformación puede escribirse como:
+
+```math
+\begin{pmatrix}
 Pixel_X \\
 Pixel_Y
-\end{bmatrix}
+\end{pmatrix}
 =
 XY\_TO\_PIXEL
-\begin{bmatrix}
+\begin{pmatrix}
 X \\
 Y
-\end{bmatrix}
+\end{pmatrix}
 +
 XY\_TO\_PIXEL\_OFFSET
-$$
+```
 
-donde `XY_TO_PIXEL` es una matriz de `2 × 2` y `XY_TO_PIXEL_OFFSET` es un vector de desplazamiento.
+Para obtener los coeficientes de la transformación se utilizan los puntos de correspondencia de la tabla. Para cada punto se relacionan sus coordenadas `(X,Y)` con sus coordenadas en píxeles `(Pixel_X, Pixel_Y)`.
 
-Para obtener ambas matrices se utilizan los puntos de correspondencia de la tabla. Para cada punto se relacionan sus coordenadas `(X,Y)` con sus coordenadas en píxeles `(Pixel_X, Pixel_Y)` mediante las ecuaciones:
-
-$$
-Pixel_X = aX + bY + t_X
-$$
-
-$$
-Pixel_Y = cX + dY + t_Y
-$$
-
-Los coeficientes de estas ecuaciones se calculan mediante **mínimos cuadrados**, utilizando los puntos de correspondencia disponibles. Este método permite obtener la transformación que mejor se ajusta al conjunto de puntos, minimizando el error entre las posiciones de píxel conocidas y las calculadas.
-
-Los coeficientes `a`, `b`, `c` y `d` forman la matriz `XY_TO_PIXEL`, mientras que `t_X` y `t_Y` forman `XY_TO_PIXEL_OFFSET`.
+Los coeficientes se calculan mediante **mínimos cuadrados**, utilizando los puntos de correspondencia disponibles. Este método permite obtener la transformación que mejor se ajusta al conjunto de puntos, minimizando el error entre las posiciones de píxel conocidas y las calculadas.
 
 Para convertir las coordenadas de píxel de nuevo al sistema `XY`, se aplica la transformación inversa:
 
-$$
-\begin{bmatrix}
+```math
+\begin{pmatrix}
 X \\
 Y
-\end{bmatrix}
+\end{pmatrix}
 =
 XY\_TO\_PIXEL^{-1}
 \left(
-\begin{bmatrix}
+\begin{pmatrix}
 Pixel_X \\
 Pixel_Y
-\end{bmatrix}
+\end{pmatrix}
 -
 XY\_TO\_PIXEL\_OFFSET
 \right)
-$$
+```
+
+De esta forma se pueden realizar las dos conversiones necesarias: de coordenadas `XY` a píxeles para representar la posición del robot sobre el mapa, y de píxeles a coordenadas `XY` para relacionar una posición de la imagen con el sistema de referencia del robot.
 
 Como se dispone de más puntos de los estrictamente necesarios para determinar la transformación, el sistema se resuelve mediante mínimos cuadrados, buscando los valores de los parámetros que minimizan el error entre las coordenadas de píxel conocidas y las coordenadas calculadas.
 
