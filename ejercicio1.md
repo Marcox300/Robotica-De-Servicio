@@ -99,7 +99,7 @@ Una vez obtenida la matriz $C$, sus cuatro primeros coeficientes permiten constr
 Para calcular la transformación inversa, es decir, pasar de coordenadas de píxel a coordenadas del sistema XY, se despeja la posición original:
 
 ```math
-XY_TO_PIXEL_OFFSET
+XY\_TO\_PIXEL\_OFFSET
 \right)
 ```
 
