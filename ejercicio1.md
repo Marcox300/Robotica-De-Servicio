@@ -229,11 +229,13 @@ La estrategia utilizada es:
 
 **Orientación correcta → avance → corrección → siguiente punto**
 
-## 5. Mejoras futuras
+## 5. Problemas
+
+## 6. Mejoras futuras
 
 El sistema desarrollado puede ampliarse para conseguir una limpieza más robusta y eficiente.
 
-### 5.1. Barrido inicial siguiendo las paredes
+### 6.1. Barrido inicial siguiendo las paredes
 
 Una posible mejora consiste en realizar un primer barrido siguiendo las paredes de la vivienda antes o 
 después de ejecutar la trayectoria principal generada mediante BSA.
@@ -243,7 +245,7 @@ especialmente, las esquinas, queden correctamente cubiertas.
 
 Esta estrategia permitiría complementar la ruta generada por BSA y reducir las zonas que pueden quedar sin limpiar en las esquinas.
 
-### 5.2. Optimización de la trayectoria y recuperación
+### 6.2. Optimización de la trayectoria y recuperación
 
 Una posible mejora sería optimizar conjuntamente la trayectoria generada por el BSA y el mecanismo de recuperación.
 
@@ -256,13 +258,13 @@ evitando que queden aisladas y reduciendo así los desplazamientos adicionales.
 De esta forma, se busca obtener una ruta más continua y eficiente, 
 manteniendo una optimización el desplazamiento frente al coste computacional del algoritmo.
 
-### 5.3. Control adaptativo de velocidad
+### 6.3. Control adaptativo de velocidad
 
 La velocidad del robot podría adaptarse en función de la zona en la que se encuentre.
 
 Por ejemplo, se podría reducir la velocidad cuando el robot esté cerca de paredes u obstáculos y aumentarla cuando se encuentre en zonas despejadas.
 
-## 6. Vídeo y explicación
+## 7. Vídeo y explicación
 
 En esta sección se muestra el funcionamiento final del robot y se explica el proceso completo de planificación y ejecución de la trayectoria.
 
