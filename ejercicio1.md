@@ -40,22 +40,21 @@ A partir de estas correspondencias se obtiene la transformación necesaria para 
 
 La transformación se define mediante:
 
-$$
+```math
 Pixel_X = aX + bY + t_X
-$$
+```
 
 
-$$
+```math
 Pixel_Y = cX + dY + t_Y
-$$
+```
 
 
 donde `a`, `b`, `c` y `d` forman la matriz `XY_TO_PIXEL`, mientras que `t_X` y `t_Y` forman `XY_TO_PIXEL_OFFSET`.
 
 Por tanto, la transformación puede escribirse como:
 
-$$
-
+```math
 \begin{pmatrix}
 Pixel_X \\
 Pixel_Y
@@ -68,7 +67,7 @@ Y
 \end{pmatrix}
 +
 XY\_TO\_PIXEL\_OFFSET
-$$
+```
 
 
 Para obtener los coeficientes de la transformación se utilizan los puntos de correspondencia de la tabla. Para cada punto se relacionan sus coordenadas `(X,Y)` con sus coordenadas en píxeles `(Pixel_X, Pixel_Y)`.
@@ -77,8 +76,7 @@ Los coeficientes se calculan mediante **mínimos cuadrados**, utilizando los pun
 
 Para convertir las coordenadas de píxel de nuevo al sistema `XY`, se aplica la transformación inversa:
 
-$$
-
+```math
 \begin{pmatrix}
 X \\
 Y
@@ -93,7 +91,7 @@ Pixel_Y
 -
 XY\_TO\_PIXEL\_OFFSET
 \right)
-$$
+```
 
 
 De esta forma se pueden realizar las dos conversiones necesarias: de coordenadas `XY` a píxeles para representar la posición del robot sobre el mapa, y de píxeles a coordenadas `XY` para relacionar una posición de la imagen con el sistema de referencia del robot.
