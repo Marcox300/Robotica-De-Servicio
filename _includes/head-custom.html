@@ -1,0 +1,36 @@
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']]
+  }
+};
+</script>
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const mathBlocks = document.querySelectorAll(
+    'pre code.language-math'
+  );
+
+  mathBlocks.forEach(function (block) {
+
+    const math = block.textContent;
+
+    const container = document.createElement("div");
+    container.className = "math-block";
+
+    container.innerHTML = "\\[" + math + "\\]";
+
+    block.parentElement.replaceWith(container);
+  });
+
+  if (window.MathJax) {
+    MathJax.typesetPromise();
+  }
+
+});
+</script>
