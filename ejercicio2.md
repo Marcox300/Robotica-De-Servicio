@@ -122,3 +122,8 @@ Explicar altura del drón, cámara
 
 
 ## 6. Vídeo
+
+<video width="640" height="360" controls>
+  <source src="video/dron.mp4" type="video/mp4">
+  Tu navegador no soporta el video.
+</video>
