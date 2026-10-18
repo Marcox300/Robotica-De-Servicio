@@ -83,7 +83,43 @@ En definitiva, el zigzag simple ofrece un buen equilibrio entre la cobertura de 
 
 ### Implementación del movimiento
 
-Cómo nos movemos espacios, marcas, altura, ...
+#### Sistema de coordenadas
+
+Para planificar la trayectoria, utilizo un sistema de coordenadas local en metros, tomando como referencia el punto de despegue:
+
+- X: desplazamiento asociado a la latitud.
+- Y: desplazamiento asociado a la longitud.
+- Z: altura respecto al sistema de referencia del simulador.
+
+En esta implementación, X aumenta aproximadamente hacia el sur e Y hacia el este.
+
+#### Conversión de GPS a coordenadas locales
+
+Las coordenadas GPS se convierten a segundos de arco y se calculan sus diferencias respecto al punto de despegue. Después, se transforman aproximadamente en metros mediante factores de 30,8 m por segundo de arco para la latitud y 23,6 m para la longitud. Así se obtiene el centro de búsqueda en coordenadas locales.
+
+#### Planificación de la rejilla
+
+La búsqueda cubre una zona de aproximadamente 40 × 40 metros, con un radio de 20 metros alrededor del centro conocido. En el ejercicio, este centro se sitúa ligeramente abajo y a la derecha de las personas para disponer de margen durante la exploración.
+
+El barrido en zigzag utiliza puntos de control separados 10 metros a lo largo de cada pasada y 3 metros entre pasadas paralelas. Esta separación favorece una cobertura ordenada y reduce el riesgo de dejar zonas sin observar, especialmente si el dron debe regresar a la base antes de completar el recorrido.
+
+#### Control de posición y orientación
+
+Utilizo `HAL.set_cmd_pos(x, y, z, az)` en lugar del control por velocidad, ya que permite establecer directamente la posición objetivo y simplifica la planificación del zigzag.
+
+Las principales funciones de movimiento disponibles son:
+
+- `HAL.set_cmd_pos(x, y, z, az)`: establece la posición objetivo y el ángulo de yaw.
+- `HAL.set_cmd_vel(vx, vy, vz, az)`: establece las velocidades lineales y la velocidad de giro del yaw.
+- `HAL.set_cmd_mix(vx, vy, z, az)`: combina velocidades horizontales con una altura objetivo y una velocidad de giro del yaw.
+
+Mantengo el yaw objetivo en `0.0` para evitar giros innecesarios y simplificar el control de la orientación durante la búsqueda. El dron vuela a 5,5 metros de altura y considera alcanzado cada punto cuando la distancia horizontal es inferior a 0,1 metros.
+
+#### Despegue, regreso y batería
+
+Al despegar, el dron asciende hasta los 5,5 metros y guarda la posición inicial como referencia para regresar. Si la batería desciende al 35 % o menos durante la búsqueda, interrumpe el barrido y vuelve a la base.
+
+Tras aterrizar, recarga la batería y reanuda la búsqueda si quedan puntos pendientes. Cuando completa el recorrido, regresa a la posición inicial y finaliza la misión.
 
 
 ## 3. Localización
