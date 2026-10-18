@@ -105,15 +105,9 @@ El barrido en zigzag utiliza puntos de control separados 10 metros a lo largo de
 
 #### Control de posición y orientación
 
-Utilizo `HAL.set_cmd_pos(x, y, z, az)` en lugar del control por velocidad, ya que permite establecer directamente la posición objetivo y simplifica la planificación del zigzag.
+Utilizo `HAL.set_cmd_pos(x, y, z, az)` en lugar de las otras funciones de movimiento. Aunque este método puede resultar más lento, permite controlar con mayor precisión la posición del dron y comprobar que alcanza cada punto antes de continuar al siguiente. Esto facilita seguir la trayectoria planificada y mantener una cobertura ordenada de la zona, mejorando el control durante la búsqueda y favoreciendo la detección de posibles supervivientes.
 
-Las principales funciones de movimiento disponibles son:
-
-- `HAL.set_cmd_pos(x, y, z, az)`: establece la posición objetivo y el ángulo de yaw.
-- `HAL.set_cmd_vel(vx, vy, vz, az)`: establece las velocidades lineales y la velocidad de giro del yaw.
-- `HAL.set_cmd_mix(vx, vy, z, az)`: combina velocidades horizontales con una altura objetivo y una velocidad de giro del yaw.
-
-Mantengo el yaw objetivo en `0.0` para evitar giros innecesarios y simplificar el control de la orientación durante la búsqueda. El dron vuela a 5,5 metros de altura y considera alcanzado cada punto cuando la distancia horizontal es inferior a 0,1 metros.
+Mantengo el yaw objetivo en `0.0` para evitar giros innecesarios y simplificar el control de la orientación durante el barrido. El dron vuela a 5,5 metros de altura y considera alcanzado cada punto cuando la distancia horizontal es inferior a 0,1 metros..
 
 #### Despegue, regreso y batería
 
