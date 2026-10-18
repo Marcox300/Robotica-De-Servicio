@@ -75,9 +75,12 @@ A diferencia de una rejilla regular, la trayectoria puede adaptarse a la geometr
 
 Para elegir el patrón de búsqueda más adecuado, se tienen en cuenta tres aspectos: la información disponible sobre el accidente, la eficiencia del recorrido y las condiciones del mar.
 
-Descarto el barrido de ruta, ya que se ha confirmado que la aeronave se ha estrellado y el objetivo es localizar posibles supervivientes, que podrían haberse desplazado por las corrientes o el viento. También descarto la espiral cuadrada, ya que resulta menos adecuada para cubrir una superficie marítima extensa de forma uniforme.
+Descarto el barrido de ruta, ya que se ha confirmado que la aeronave se ha estrellado y el objetivo es localizar posibles supervivientes,
+que podrían haberse desplazado por las corrientes o el viento. También descarto la espiral cuadrada, ya que resulta menos adecuada para cubrir una superficie marítima extensa de forma uniforme.
 
-Por este motivo, selecciono el barrido de rejilla en zigzag y elijo la opción 1: zigzag simple. Como las condiciones del mar son relativamente calmadas, considero que un único barrido permite cubrir la zona de forma ordenada, ahorrando tiempo y batería. Si se detecta algún posible objetivo, se puede realizar una segunda pasada localizada para comprobarlo.
+Por este motivo, selecciono el barrido de rejilla en zigzag y elijo la opción 1: zigzag simple.
+Como las condiciones del mar son relativamente calmadas, considero que un único barrido permite cubrir la zona de forma ordenada,
+ahorrando tiempo y batería. Si se detecta algún posible objetivo, se puede realizar una segunda pasada localizada para comprobarlo.
 
 En definitiva, el zigzag simple ofrece un buen equilibrio entre la cobertura de la zona, el tiempo de vuelo y el consumo de batería.
 
@@ -95,23 +98,31 @@ En esta implementación, X aumenta aproximadamente hacia el sur e Y hacia el est
 
 #### Conversión de GPS a coordenadas locales
 
-Las coordenadas GPS se convierten a segundos de arco y se calculan sus diferencias respecto al punto de despegue. Después, se transforman aproximadamente en metros mediante factores de 30,8 m por segundo de arco para la latitud y 23,6 m para la longitud. Así se obtiene el centro de búsqueda en coordenadas locales.
+Las coordenadas GPS se convierten a segundos de arco y se calculan sus diferencias respecto al punto de despegue.
+Después, se transforman aproximadamente en metros mediante factores de 30,8 m por segundo de arco para la latitud y 23,6 m para la longitud.
+Así se obtiene el centro de búsqueda en coordenadas locales.
 
 #### Planificación de la rejilla
 
-La búsqueda cubre una zona de aproximadamente 40 × 40 metros, con un radio de 20 metros alrededor del centro conocido. En el ejercicio, este centro se sitúa ligeramente abajo y a la derecha de las personas para disponer de margen durante la exploración.
+La búsqueda cubre una zona de aproximadamente 40 × 40 metros, con un radio de 20 metros alrededor del centro conocido.
+En el ejercicio, este centro se sitúa ligeramente abajo y a la derecha de las personas para disponer de margen durante la exploración.
 
-El barrido en zigzag utiliza puntos de control separados 10 metros a lo largo de cada pasada y 3 metros entre pasadas paralelas. Esta separación favorece una cobertura ordenada y reduce el riesgo de dejar zonas sin observar, especialmente si el dron debe regresar a la base antes de completar el recorrido.
+El barrido en zigzag utiliza puntos de control separados 10 metros a lo largo de cada pasada y 3 metros entre pasadas paralelas.
+Esta separación favorece una cobertura ordenada y reduce el riesgo de dejar zonas sin observar, especialmente si el dron debe regresar a la base antes de completar el recorrido.
 
 #### Control de posición y orientación
 
-Utilizo `HAL.set_cmd_pos(x, y, z, az)` en lugar de las otras funciones de movimiento. Aunque este método puede resultar más lento, permite controlar con mayor precisión la posición del dron y comprobar que alcanza cada punto antes de continuar al siguiente. Esto facilita seguir la trayectoria planificada y mantener una cobertura ordenada de la zona, mejorando el control durante la búsqueda y favoreciendo la detección de posibles supervivientes.
+Utilizo `HAL.set_cmd_pos(x, y, z, az)` en lugar de las otras funciones de movimiento.
+Aunque este método puede resultar más lento, permite controlar con mayor precisión la posición del dron y comprobar que alcanza cada punto antes de continuar al siguiente.
+Esto facilita seguir la trayectoria planificada y mantener una cobertura ordenada de la zona, mejorando el control durante la búsqueda y favoreciendo la detección de posibles supervivientes.
 
-Mantengo el yaw objetivo en `0.0` para evitar giros innecesarios y simplificar el control de la orientación durante el barrido. El dron vuela a 5,5 metros de altura y considera alcanzado cada punto cuando la distancia horizontal es inferior a 0,1 metros..
+Mantengo el yaw objetivo en `0.0` para evitar giros innecesarios y simplificar el control de la orientación durante el barrido.
+El dron vuela a 5,5 metros de altura y considera alcanzado cada punto cuando la distancia horizontal es inferior a 0,1 metros..
 
 #### Despegue, regreso y batería
 
-Al despegar, el dron asciende hasta los 5,5 metros y guarda la posición inicial como referencia para regresar. Si la batería desciende al 35 % o menos durante la búsqueda, interrumpe el barrido y vuelve a la base.
+Al despegar, el dron asciende hasta los 5,5 metros y guarda la posición inicial como referencia para regresar.
+Si la batería desciende al 35 % o menos durante la búsqueda, interrumpe el barrido y vuelve a la base.
 
 Tras aterrizar, recarga la batería y reanuda la búsqueda si quedan puntos pendientes. Cuando completa el recorrido, regresa a la posición inicial y finaliza la misión.
 
@@ -120,11 +131,30 @@ Tras aterrizar, recarga la batería y reanuda la búsqueda si quedan puntos pend
 
 ### 3.1 Localización Local
 
+El dron utiliza un sistema de coordenadas local respecto al punto de despegue para calcular su posición y desplazarse por la zona de búsqueda.
+La posición se representa mediante los ejes X e Y, correspondientes a los desplazamientos horizontales, y el eje Z, que representa la altura.
+
+Durante la búsqueda, el dron mantiene una altura de 5,5 metros y utiliza el control por posición para desplazarse entre los puntos de la rejilla.
+Se considera que ha alcanzado cada punto cuando la distancia horizontal respecto al objetivo es inferior a 0,1 metros.
+
 ### 3.2 Localización Global
+
+La localización global se basa en las coordenadas GPS del punto de despegue y de la zona donde se encuentran las personas.
+Estas coordenadas se convierten a un sistema local expresado en metros, lo que permite calcular la posición aproximada del centro de búsqueda y generar la trayectoria de exploración.
+
+De esta manera, las coordenadas GPS sirven para definir la zona que debe inspeccionarse,
+mientras que las coordenadas locales permiten controlar los desplazamientos del dron durante el vuelo.
 
 ### 3.3 Localización de Personas
 
-Explicar altura del drón, cámara
+La detección de personas se realiza mediante las imágenes obtenidas por la cámara ventral del dron, orientada hacia el suelo.
+Esta cámara permite observar la superficie situada bajo el vehículo durante el recorrido de búsqueda.
+
+El dron mantiene una altura de 5,5 metros para realizar la exploración a una distancia relativamente constante del suelo.
+Esta altura permite observar una zona amplia sin alejar demasiado la cámara de los posibles objetivos, facilitando su detección.
+
+Las imágenes capturadas se procesan para identificar posibles personas.
+La trayectoria en zigzag permite inspeccionar progresivamente la zona y relacionar las detecciones con la posición del dron en el momento de la observación.
 
 
 ## 4. Detección de personas
