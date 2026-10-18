@@ -75,23 +75,11 @@ A diferencia de una rejilla regular, la trayectoria puede adaptarse a la geometr
 
 Para elegir el patrón de búsqueda más adecuado, se tienen en cuenta tres aspectos: la información disponible sobre el accidente, la eficiencia del recorrido y las condiciones del mar.
 
-En primer lugar, descarto el barrido de ruta, ya que se ha confirmado que la aeronave se ha estrellado. Por tanto, el objetivo no es seguir una ruta concreta,
-sino localizar a posibles supervivientes en la zona del accidente. Aunque se conoce un punto aproximado del impacto,
-no se puede asegurar que las personas se encuentren exactamente allí, ya que podrían haberse desplazado por efecto de las corrientes o del viento.
+Descarto el barrido de ruta, ya que se ha confirmado que la aeronave se ha estrellado y el objetivo es localizar posibles supervivientes, que podrían haberse desplazado por las corrientes o el viento. También descarto la espiral cuadrada, ya que resulta menos adecuada para cubrir una superficie marítima extensa de forma uniforme.
 
-La espiral cuadrada también podría ser una opción, porque permite ampliar la búsqueda progresivamente desde un punto conocido. Sin embargo,
-resulta menos adecuada para cubrir una superficie marítima extensa de forma uniforme, ya que concentra el recorrido alrededor de una posición inicial.
+Por este motivo, selecciono el barrido de rejilla en zigzag y elijo la opción 1: zigzag simple. Como las condiciones del mar son relativamente calmadas, considero que un único barrido permite cubrir la zona de forma ordenada, ahorrando tiempo y batería. Si se detecta algún posible objetivo, se puede realizar una segunda pasada localizada para comprobarlo.
 
-Por este motivo, selecciono el barrido de rejilla en zigzag, ya que permite recorrer la zona mediante pasadas paralelas y cubrirla de forma ordenada.
-Además, facilita la planificación del vuelo, reduce los desplazamientos innecesarios y permite aprovechar mejor el tiempo de vuelo y la batería del dron.
-
-Entre las dos variantes de este patrón, elijo la opción 1: zigzag simple. Como las condiciones del mar son relativamente calmadas,
-considero que un único barrido es suficiente para realizar la búsqueda inicial, sin necesidad de repetir todo el recorrido con una segunda pasada superpuesta.
-De esta forma, se ahorra tiempo y batería, que pueden aprovecharse para revisar zonas concretas si se detecta algún posible objetivo.
-
-En definitiva, el zigzag simple es la opción más adecuada para este escenario, ya que ofrece un buen equilibrio entre la cobertura de la zona,
-el tiempo de vuelo y el consumo de batería. Si durante la búsqueda se encuentra alguna detección dudosa,
-se puede realizar una segunda pasada sobre esa zona para comprobarla con mayor detalle.
+En definitiva, el zigzag simple ofrece un buen equilibrio entre la cobertura de la zona, el tiempo de vuelo y el consumo de batería.
 
 ### Implementación del movimiento
 
