@@ -157,6 +157,17 @@ El proceso de detección de caras y el cálculo de su posición en el sistema de
 
 ### 4.1 Marcarlas
 
+Para detectar posibles supervivientes, se utiliza el clasificador Haar de OpenCV, concretamente haarcascade_frontalface_default.xml. Este método permite identificar posibles caras en las imágenes capturadas por la cámara ventral del dron.
+
+Como las caras pueden aparecer con distintas orientaciones, la imagen se analiza mediante 16 rotaciones, desde 0° hasta 337,5°, en incrementos de 22,5°. En cada orientación se aplica el clasificador Haar para buscar posibles caras.
+
+Cuando se detecta una cara, se calcula el centro de su rectángulo delimitador. Si la imagen está rotada, este centro se transforma de nuevo a las coordenadas de la imagen original mediante la matriz de rotación inversa. De esta forma, todas las detecciones quedan referenciadas al mismo sistema de coordenadas, independientemente de la rotación con la que se hayan encontrado.
+
+Este procedimiento permite detectar varias caras en una misma imagen y obtener el centro de cada una, información que se utilizará posteriormente para calcular su posición en el entorno.
+
+Además, como una misma cara puede detectarse en varias rotaciones de la imagen, se eliminan los duplicados comparando los centros de las detecciones. Si la distancia entre el centro de una nueva detección y el de una cara ya registrada es inferior a 20 píxeles, se considera que ambas corresponden a la misma cara y se descarta la nueva detección.
+
+Uno de los principales retos ha sido evitar que el clasificador detecte falsas caras en la superficie del agua. Los reflejos, las sombras y los patrones del agua pueden generar formas similares a una cara. En las pruebas realizadas, limitar el tamaño máximo de las detecciones a 80 píxeles ha resultado útil para reducir algunas de estas detecciones no deseadas (maxSize=(80, 80)). Sin embargo, este ajuste no elimina todos los falsos positivos, por lo que es necesario aplicar mecanismos adicionales de filtrado.
 
 ### 4.2 Filtrar
 
