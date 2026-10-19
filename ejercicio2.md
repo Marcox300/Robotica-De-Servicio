@@ -202,6 +202,32 @@ Su precisión depende, entre otros factores, de la escala utilizada para convert
 
 ### 4.3 Filtrar
 
+Para gestionar las detecciones obtenidas, se utiliza la lista people, donde cada objetivo se almacena mediante su posición global en el mapa local del dron
+(coordenadas X e Y) y un estado que indica si es candidato o está confirmado:
+
+- 0: objetivo candidato, detectado por primera vez.
+
+- 1: objetivo confirmado, detectado de nuevo cerca de una posición ya registrada.
+
+En primer lugar, para evitar registrar varias veces una misma cara dentro de una imagen,
+se comparan los centros de las detecciones obtenidas durante las distintas rotaciones.
+Si la distancia entre el centro de una nueva detección y el de una cara ya registrada es inferior a 20 píxeles, la nueva detección se considera un duplicado y se descarta.
+
+A continuación, cuando se obtiene una posición global en el mapa local, la función process_absolute_position() calcula la distancia respecto a los objetivos almacenados en people.
+Para realizar esta comparación, se utiliza el parámetro POSITION_MARGIN, establecido en 2 metros.
+
+Si la nueva posición se encuentra a menos de 2 metros de un objetivo existente, ambas detecciones se consideran asociadas al mismo objetivo.
+En ese caso, se calcula la media de las coordenadas anteriores y nuevas para actualizar su posición estimada, y el objetivo pasa al estado confirmado (1).
+
+Si no existe ningún objetivo registrado dentro de ese margen, la nueva posición se añade a la lista como candidata (0).
+De esta forma, una detección aislada no se considera inmediatamente un superviviente confirmado, sino que debe producirse otra detección en una posición suficientemente cercana.
+
+Este mecanismo permite reducir los falsos positivos que no vuelven a detectarse cerca de la misma posición y evita registrar varias veces un mismo objetivo cuando las detecciones son próximas.
+No obstante, no garantiza que todas las detecciones confirmadas correspondan a personas reales, ya que un falso positivo también podría volver a detectarse cerca de una posición anterior.
+
+Finalmente, al terminar la misión, solo se consideran los objetivos cuyo estado es 1. Sus posiciones globales, expresadas en el sistema de coordenadas local,
+se convierten a coordenadas GPS mediante pose_to_gps() para obtener la localización geográfica aproximada de los supervivientes confirmados.
+
 
 ## 5. Autonomía
 
