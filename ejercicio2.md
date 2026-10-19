@@ -192,6 +192,8 @@ Sin embargo, esta estimación puede verse afectada por la inclinación del dron,
 Para compensar este efecto, se obtienen los ángulos de inclinación lateral (roll) y longitudinal (pitch).
 A partir de ellos, se calculan las correcciones mediante las expresiones altura × tan(roll) y altura × tan(pitch), que se restan a los desplazamientos calculados a partir de la imagen.
 
+<img width="556" height="461" alt="Screenshot from 2026-10-19 12-28-04" src="https://github.com/user-attachments/assets/eecb0c10-6344-4623-aba4-c76ec87eedbb" />
+
 Una vez corregidos estos desplazamientos, se obtiene la posición relativa de la cara respecto al dron.
 Esta posición se suma a las coordenadas actuales del vehículo en el mapa local mediante la función get_global_positions().
 Así se obtiene una posición global dentro del mapa local, expresada en metros y referenciada al punto de despegue.
