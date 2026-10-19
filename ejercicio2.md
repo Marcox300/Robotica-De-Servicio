@@ -231,10 +231,49 @@ se convierten a coordenadas GPS mediante pose_to_gps() para obtener la localizac
 
 ## 5. Autonomía
 
+La autonomía del dron se gestiona mediante una variable que representa el nivel de batería, inicializada al 100 %.
+Durante el vuelo, se simula el consumo energético restando una pequeña cantidad en cada tick de ejecución (BATTERY_CONSUMPTION_PER_TICK = 0.008).
 
-## 6. Vídeo
+Se ha establecido un umbral de retorno del 45 % (BATTERY_RETURN_THRESHOLD = 45.0).
+Cuando la batería alcanza este nivel durante la búsqueda, el dron interrumpe la exploración y regresa al punto de despegue para aterrizar.
+De esta forma, se reserva un margen de batería para completar el regreso y el aterrizaje, reduciendo el riesgo de que el dron se quede sin energía lejos de su punto de partida.
+
+Uno de los principales retos es determinar cuánto disminuye realmente la batería en cada tick.
+El consumo depende de factores como los desplazamientos, la altura, las maniobras y el tiempo de funcionamiento de los motores.
+Por ello, resulta difícil asignar un consumo fijo que represente con precisión el comportamiento real del dron.
+En esta implementación se utiliza un valor constante como aproximación para simular la descarga, por lo que el porcentaje calculado no representa necesariamente el consumo físico real.
+
+Si el dron regresa por batería baja, aterriza y entra en un estado de recarga simulada.
+Cuando la batería vuelve al 100 %, retoma la búsqueda si todavía quedan puntos por inspeccionar. Si la exploración ha terminado, la misión finaliza.
+
+## 6. Limitaciones de la simulación
+
+Las funciones `HAL.takeoff(TAKEOFF_HEIGHT)` y `HAL.land()` bloquean la ejecución del programa mientras se realizan las maniobras de despegue y aterrizaje.
+Durante estas llamadas, el bucle principal queda detenido, por lo que no se actualizan las variables ni se procesan nuevas imágenes con normalidad.
+
+Además, estas operaciones no descuentan directamente el coste de batería en la simulación implementada.
+El consumo se calcula mediante una cantidad fija por tick (`BATTERY_CONSUMPTION_PER_TICK = 0.008`), pero este cálculo no refleja necesariamente la
+energía utilizada durante el despegue y el aterrizaje.
+Por tanto, resulta difícil estimar el consumo real y garantizar que el porcentaje de batería simulado coincida con el comportamiento físico del dron.
+
+Otra limitación es que, mientras se ejecutan estas funciones bloqueantes, no es posible visualizar ni procesar nuevas imágenes desde el bucle principal.
+Esto dificulta supervisar visualmente el estado del dron durante las maniobras.
+
+## 7. Vídeo
 
 <video width="640" height="360" controls>
   <source src="video/dron.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
+
+> Nota: El video va más lento de la capacidad original del simulador al ser una grabación de pantalla al no contar con otros medios de grabaro en su momento.
+
+A lo largo del vídeo se observa cómo el dron vuelve a detectar caras durante la búsqueda sin incrementar el contador
+cuando estas corresponden a posiciones ya registradas. Esto demuestra la eficacia del mecanismo de seguimiento para evitar contabilizar varias veces un mismo objetivo.
+
+También se muestra el retorno automático cuando la batería alcanza el umbral del 45 %.
+Esta decisión permite reservar un margen de batería para que el dron pueda regresar al punto de despegue y realizar el aterrizaje con mayor seguridad.
+
+Una vez completada la recarga, el dron retoma la búsqueda desde los puntos pendientes,
+continúa la ruta correctamente y completa la misión. De esta forma, se demuestra que el sistema puede gestionar tanto el retorno por batería baja
+como la reanudación de la exploración sin abandonar los objetivos que todavía quedan por inspeccionar.
