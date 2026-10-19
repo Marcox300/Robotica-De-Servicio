@@ -147,21 +147,37 @@ mientras que las coordenadas locales permiten controlar los desplazamientos del 
 
 ### 3.3 Localización de Personas
 
-La detección de personas se realiza mediante las imágenes obtenidas por la cámara ventral del dron, orientada hacia el suelo.
-Esta cámara permite observar la superficie situada bajo el vehículo durante el recorrido de búsqueda.
+Una vez obtenida la posición de una persona en el entorno local, esta puede convertirse a coordenadas GPS para determinar su localización global.
+Para ello, se utiliza como referencia la posición GPS del punto de despegue y los factores de conversión entre segundos de arco y metros.
 
-El dron mantiene una altura de 5,5 metros para realizar la exploración a una distancia relativamente constante del suelo.
-Esta altura permite observar una zona amplia sin alejar demasiado la cámara de los posibles objetivos, facilitando su detección.
-
-Las imágenes capturadas se procesan para identificar posibles personas.
-La trayectoria en zigzag permite inspeccionar progresivamente la zona y relacionar las detecciones con la posición del dron en el momento de la observación.
+El proceso de detección de caras y el cálculo de su posición en el sistema de coordenadas local se explican en el apartado 4.
 
 
 ## 4. Detección de personas
 
 ### 4.1 Marcarlas
 
+Para detectar posibles supervivientes, se utiliza el clasificador Haar de OpenCV, concretamente haarcascade_frontalface_default.xml.
+Este método permite identificar posibles caras en las imágenes capturadas por la cámara ventral del dron.
+
+Como las caras pueden aparecer con distintas orientaciones, la imagen se analiza mediante 16 rotaciones, desde 0° hasta 337,5°, en incrementos de 22,5°.
+En cada orientación se aplica el clasificador Haar para buscar posibles caras.
+
+Cuando se detecta una cara, se calcula el centro de su rectángulo delimitador. Si la imagen está rotada,
+este centro se transforma de nuevo a las coordenadas de la imagen original mediante la matriz de rotación inversa.
+De esta forma, todas las detecciones quedan referenciadas al mismo sistema de coordenadas, independientemente de la rotación con la que se hayan encontrado.
+
+Este procedimiento permite detectar varias caras en una misma imagen y obtener el centro de cada una,
+información que se utilizará posteriormente para calcular su posición en el entorno.
+
+Uno de los principales retos ha sido evitar que el clasificador detecte falsas caras en la superficie del agua.
+Los reflejos, las sombras y los patrones del agua pueden generar formas similares a una cara. En las pruebas realizadas,
+limitar el tamaño máximo de las detecciones a 80 píxeles ha resultado útil para reducir algunas de estas detecciones no deseadas (`maxSize=(80, 80)`).
+Sin embargo, este ajuste no elimina todos los falsos positivos, por lo que es necesario aplicar mecanismos adicionales de filtrado.
+
 ### 4.2 Filtrar
+
+
 
 ### 4.3 Localizar
 
