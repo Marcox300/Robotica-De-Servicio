@@ -157,23 +157,50 @@ El proceso de detección de caras y el cálculo de su posición en el sistema de
 
 ### 4.1 Marcarlas
 
-Para detectar posibles supervivientes, se utiliza el clasificador Haar de OpenCV, concretamente haarcascade_frontalface_default.xml. Este método permite identificar posibles caras en las imágenes capturadas por la cámara ventral del dron.
+Para detectar posibles supervivientes, se utiliza el clasificador Haar de OpenCV, concretamente haarcascade_frontalface_default.xml.
+Este método permite identificar posibles caras en las imágenes capturadas por la cámara ventral del dron.
 
-Como las caras pueden aparecer con distintas orientaciones, la imagen se analiza mediante 16 rotaciones, desde 0° hasta 337,5°, en incrementos de 22,5°. En cada orientación se aplica el clasificador Haar para buscar posibles caras.
+Como las caras pueden aparecer con distintas orientaciones, la imagen se analiza mediante 16 rotaciones, desde 0° hasta 337,5°, en incrementos de 22,5°.
+En cada orientación se aplica el clasificador Haar para buscar posibles caras.
 
-Cuando se detecta una cara, se calcula el centro de su rectángulo delimitador. Si la imagen está rotada, este centro se transforma de nuevo a las coordenadas de la imagen original mediante la matriz de rotación inversa. De esta forma, todas las detecciones quedan referenciadas al mismo sistema de coordenadas, independientemente de la rotación con la que se hayan encontrado.
+Cuando se detecta una cara, se calcula el centro de su rectángulo delimitador.
+Si la imagen está rotada, este centro se transforma de nuevo a las coordenadas de la imagen original mediante la matriz de rotación inversa.
+De esta forma, todas las detecciones quedan referenciadas al mismo sistema de coordenadas, independientemente de la rotación con la que se hayan encontrado.
 
 Este procedimiento permite detectar varias caras en una misma imagen y obtener el centro de cada una, información que se utilizará posteriormente para calcular su posición en el entorno.
 
-Además, como una misma cara puede detectarse en varias rotaciones de la imagen, se eliminan los duplicados comparando los centros de las detecciones. Si la distancia entre el centro de una nueva detección y el de una cara ya registrada es inferior a 20 píxeles, se considera que ambas corresponden a la misma cara y se descarta la nueva detección.
+Además, como una misma cara puede detectarse en varias rotaciones de la imagen, se eliminan los duplicados comparando los centros de las detecciones.
+Si la distancia entre el centro de una nueva detección y el de una cara ya registrada es inferior a 20 píxeles,
+se considera que ambas corresponden a la misma cara y se descarta la nueva detección.
 
-Uno de los principales retos ha sido evitar que el clasificador detecte falsas caras en la superficie del agua. Los reflejos, las sombras y los patrones del agua pueden generar formas similares a una cara. En las pruebas realizadas, limitar el tamaño máximo de las detecciones a 80 píxeles ha resultado útil para reducir algunas de estas detecciones no deseadas (maxSize=(80, 80)). Sin embargo, este ajuste no elimina todos los falsos positivos, por lo que es necesario aplicar mecanismos adicionales de filtrado.
+Uno de los principales retos ha sido evitar que el clasificador detecte falsas caras en la superficie del agua. Los reflejos,
+las sombras y los patrones del agua pueden generar formas similares a una cara. En las pruebas realizadas,
+limitar el tamaño máximo de las detecciones a 80 píxeles ha resultado útil para reducir algunas de estas detecciones no deseadas (maxSize=(80, 80)).
+Sin embargo, este ajuste no elimina todos los falsos positivos, por lo que es necesario aplicar mecanismos adicionales de filtrado.
 
-### 4.2 Filtrar
+### 4.2 Localizar
+
+Una vez detectada una cara y obtenido su centro en las coordenadas de la imagen original,
+es necesario relacionar esa posición con el entorno local del dron para estimar dónde se encuentra la persona.
+
+Para ello, se tienen en cuenta la posición actual del dron, la altura de vuelo y su inclinación.
+Durante la búsqueda, el dron mantiene una altura de 5,5 metros.
+Además, se utiliza el factor METERS_PER_PIXEL, establecido en 0,015 m por píxel,
+para convertir el desplazamiento entre el centro de la imagen y el centro de la cara detectada en una distancia aproximada en metros.
+
+Sin embargo, esta estimación puede verse afectada por la inclinación del dron, ya que la cámara ventral deja de apuntar directamente hacia el suelo.
+Para compensar este efecto, se obtienen los ángulos de inclinación lateral (roll) y longitudinal (pitch).
+A partir de ellos, se calculan las correcciones mediante las expresiones altura × tan(roll) y altura × tan(pitch), que se restan a los desplazamientos calculados a partir de la imagen.
+
+Una vez corregidos estos desplazamientos, se obtiene la posición relativa de la cara respecto al dron.
+Esta posición se suma a las coordenadas actuales del vehículo en el mapa local mediante la función get_global_positions().
+Así se obtiene una posición global dentro del mapa local, expresada en metros y referenciada al punto de despegue.
+
+Este cálculo proporciona una estimación aproximada de la posición de cada posible superviviente.
+Su precisión depende, entre otros factores, de la escala utilizada para convertir píxeles a metros y de la aproximación empleada para compensar la inclinación del dron.
 
 
-
-### 4.3 Localizar
+### 4.3 Filtrar
 
 
 ## 5. Autonomía
