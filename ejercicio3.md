@@ -15,8 +15,12 @@ alineación para iniciar la maniobra y ejecución del aparcamiento con las corre
 
 Antes de utilizar los datos del sensor, es necesario realizar un filtrado para quedarnos únicamente con los puntos relevantes para la maniobra.
 
-- **Filtrado por altura:** seleccionamos una franja de altura para eliminar puntos del suelo y elementos que no resultan útiles para detectar los vehículos en mi caso entre (-1.2, -1.3).
-- **Eliminación del propio vehículo:** descartamos los puntos que se encuentran dentro de los límites de nuestro coche, definidos mediante `CAR_X_MIN`, `CAR_X_MAX`, `CAR_Y_MIN` y `CAR_Y_MAX`.
+- Filtrado por altura: seleccionamos una franja de altura para eliminar puntos del suelo y elementos que no resultan útiles para detectar los vehículos en mi caso entre (-1.2, -1.3).
+- Eliminación del propio vehículo: descartamos los puntos que se encuentran dentro de los límites de nuestro coche, definidos mediante `CAR_X_MIN`, `CAR_X_MAX`, `CAR_Y_MIN` y `CAR_Y_MAX`.
+
+> **Visualización:** En la siguiente imagen se muestra el recuadro que delimita el vehículo y cuyos puntos LiDAR se descartan durante el filtrado.
+
+<img width="948" height="517" alt="coche" src="https://github.com/user-attachments/assets/7427dbcb-a160-468e-8308-c0bbcd7ce849" />
 
 ## 3. Detección de la orientación de la línea de coches — Estado 0
 
@@ -48,6 +52,10 @@ Para aceptar un hueco comprobamos dos condiciones:
 2. Anchura disponible: una vez localizado un hueco con longitud suficiente, comprobamos que también exista espacio en el eje X para que el coche pueda entrar.
 
 Cuando ambas condiciones se cumplen, guardamos los puntos que delimitan el espacio para utilizarlos durante la siguiente fase.
+
+> **Visualización:** En la siguiente imagen se muestra el hueco detectado y validado por el algoritmo.
+
+<img width="948" height="517" alt="aparcar" src="https://github.com/user-attachments/assets/e8b0b846-6837-4333-ae1a-d4a36f11207d" />
 
 **Problema encontrado y solución:** en algunos casos el hueco puede estar delimitado únicamente por una referencia detectable. Para poder representar correctamente los límites del espacio y facilitar los cálculos posteriores, añadimos dos puntos artificiales en coordenadas del LiDAR:
 
