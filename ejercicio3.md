@@ -88,18 +88,38 @@ Cuando el vehículo se encuentra correctamente aparcado, detenemos el movimiento
 
 ### 10.1. Aparcamiento con dos referencias
 
+<video width="640" height="360" controls>
+  <source src="video/x.webm" type="video/webm">
+  Tu navegador no soporta el video.
+</video>
+
 En este vídeo se muestra cómo el vehículo detecta el hueco delimitado por dos coches y realiza la maniobra de aparcamiento de forma directa,
 necesitando muy pocas correcciones. Además, una vez finalizada la maniobra, ajusta su posición para dejar una distancia de seguridad respecto al vehículo trasero,
 facilitando así las maniobras de salida y entrada de otros conductores.
 
 ### 10.2. Aparcamiento utilizando únicamente la referencia trasera
 
+<video width="640" height="360" controls>
+  <source src="video/x.webm" type="video/webm">
+  Tu navegador no soporta el video.
+</video>
+
 ### 10.3. Aparcamiento utilizando únicamente la referencia delantera
+
+<video width="640" height="360" controls>
+  <source src="video/x.webm" type="video/webm">
+  Tu navegador no soporta el video.
+</video>
 
 El vehículo aparca utilizando únicamente el coche delantero como referencia. Debido a la dificultad para detectar la orientación con pocos puntos,
 se omite la fase inicial y se asume que ya está paralelo a la línea de aparcamiento.
 
 ### 10.4. Aparcamiento con una orientación inicial inclinada
+
+<video width="640" height="360" controls>
+  <source src="video/x.webm" type="video/webm">
+  Tu navegador no soporta el video.
+</video>
 
 ## 11. Mejoras futuras
 
