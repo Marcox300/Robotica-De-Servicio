@@ -89,7 +89,7 @@ Cuando el vehículo se encuentra correctamente aparcado, detenemos el movimiento
 ### 10.1. Aparcamiento con dos referencias
 
 <video width="640" height="360" controls>
-  <source src="video/x.webm" type="video/webm">
+  <source src="video/2_ref.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
 
@@ -100,14 +100,14 @@ facilitando así las maniobras de salida y entrada de otros conductores.
 ### 10.2. Aparcamiento utilizando únicamente la referencia trasera
 
 <video width="640" height="360" controls>
-  <source src="video/x.webm" type="video/webm">
+  <source src="video/ref_tra.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
 
 ### 10.3. Aparcamiento utilizando únicamente la referencia delantera
 
 <video width="640" height="360" controls>
-  <source src="video/x.webm" type="video/webm">
+  <source src="video/ref_del.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
 
@@ -117,7 +117,7 @@ se omite la fase inicial y se asume que ya está paralelo a la línea de aparcam
 ### 10.4. Aparcamiento con una orientación inicial inclinada
 
 <video width="640" height="360" controls>
-  <source src="video/x.webm" type="video/webm">
+  <source src="video/ang.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
 
