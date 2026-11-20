@@ -81,9 +81,9 @@ teniendo en cuenta los cambios entre avance y retroceso.
 Para la planificación se utiliza la geometría de la carga, con un *footprint* de `1.85 × 0.80 m`.
 El radio mínimo de giro viene determinado por la distancia entre ejes y el ángulo máximo de dirección:
 
-\
+$$
 R_{\min}=\frac{0.488}{\tan(0.64)}
-\
+$$
 
 Sin embargo, no he conseguido afinar completamente el control de retroceso.
 Esto, junto con los errores de seguimiento, me ha llevado a aumentar el tamaño considerado en los cálculos geométricos para disponer de más margen de seguridad.
@@ -99,3 +99,48 @@ MIN_TURNING_RADIUS = (WHEEL_BASE / math.tan(STEERING_LIMIT)) + 1.0
 ```
 
 Este margen adicional busca generar trayectorias más amplias y facilitar su seguimiento, aunque supone una aproximación conservadora respecto a las capacidades reales del robot.
+
+### 6. Revisión de la estructura del código
+
+A lo largo de los distintos apartados he mantenido prácticamente la estructura inicial del programa. 
+La organización mediante módulos independientes, funciones auxiliares y una máquina de estados ha permitido adaptar la planificación, 
+la geometría y el controlador sin tener que rehacer la implementación desde cero.
+
+Aunque he tenido que introducir cambios importantes en la lógica de movimiento para adaptarla al modelo Ackermann,
+considero que la estructura original ha resultado adecuada y ha facilitado la evolución del código.
+Esto ha permitido reutilizar gran parte de las funcionalidades anteriores, reduciendo la necesidad de duplicar código y evitando modificaciones innecesarias en el resto del programa.
+
+### 7. Análisis de la planificación y los resultados
+
+Durante el desarrollo he utilizado diferentes algoritmos de planificación de OMPL. 
+RRT explora el espacio de estados mediante la generación de nuevos nodos y permite encontrar una solución válida en un tiempo razonable, aunque no busca optimizarla. 
+Por su parte, RRT* incorpora conexiones y reajustes de nodos para mejorar progresivamente la solución encontrada, buscando rutas de menor coste a medida que aumenta el tiempo de planificación.
+
+También he utilizado `solution_path.interpolate(200)` para aumentar el número de puntos de la trayectoria.
+Esto permite obtener una representación más densa del camino y facilita su seguimiento por el controlador, aunque no implica que la ruta original sea más óptima.
+
+Posteriormente, simplifico la trayectoria mediante `PathSimplifier`, una vez comprobado que la solución alcanza correctamente el objetivo:
+
+```python
+# Simplify the path only after validating the goal
+simplifier = og.PathSimplifier(si)
+simplifier.simplifyMax(solution_path)
+```
+
+Esta simplificación intenta eliminar puntos innecesarios y reducir la longitud de la ruta,manteniendo la validez de la trayectoria respecto a las restricciones del espacio de planificación.
+No obstante, durante las pruebas comprobé que simplificar demasiado algunas rutas podía dificultar su seguimiento, especialmente al realizar maniobras de marcha atrás.
+
+Por otro lado, inicialmente el enunciado proponía utilizar el sensor láser para obtener información del entorno.
+Su utilización habría permitido detectar mejor la posición real de las estanterías y actualizar el mapa con mayor precisión, especialmente después de depositarlas.
+Al no haber implementado esta funcionalidad, he asumido que las posiciones de depósito y las dimensiones consideradas son correctas.
+Esto limita la precisión del mapa y hace que la planificación dependa de que la simulación se comporte de acuerdo con estas estimaciones.
+
+### 8. Posibles mejoras futuras
+
+Como posibles mejoras, considero necesario seguir trabajando en los siguientes aspectos:
+
+- **Precisión del controlador:** mejorar el seguimiento de las trayectorias, reduciendo los errores de posición y orientación, especialmente en curvas y maniobras próximas a obstáculos.
+- **Marcha atrás:** realizar un análisis más exhaustivo del comportamiento del robot en retroceso y ajustar los parámetros del controlador para conseguir maniobras más estables y fiables.
+- **Recuperación de posición y orientación:** mejorar el mecanismo de corrección final. Actualmente permite ajustar razonablemente el ángulo del robot, pero no consigue corregir adecuadamente su posición, por lo que sería conveniente implementar un procedimiento que permita alcanzar ambas condiciones simultáneamente.
+- **Uso del sensor láser:** incorporar la información del láser para detectar la posición real de las estanterías y actualizar el mapa tras cada operación, reduciendo la dependencia de las posiciones estimadas.
+- **Planificación y simplificación:** estudiar cómo simplificar las trayectorias sin perjudicar su seguimiento, buscando un equilibrio entre la longitud del camino, la seguridad y la facilidad de ejecución.
