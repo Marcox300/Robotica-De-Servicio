@@ -81,9 +81,9 @@ teniendo en cuenta los cambios entre avance y retroceso.
 Para la planificación se utiliza la geometría de la carga, con un *footprint* de `1.85 × 0.80 m`.
 El radio mínimo de giro viene determinado por la distancia entre ejes y el ángulo máximo de dirección:
 
-\[
+\
 R_{\min}=\frac{0.488}{\tan(0.64)}
-\]
+\
 
 Sin embargo, no he conseguido afinar completamente el control de retroceso.
 Esto, junto con los errores de seguimiento, me ha llevado a aumentar el tamaño considerado en los cálculos geométricos para disponer de más margen de seguridad.
