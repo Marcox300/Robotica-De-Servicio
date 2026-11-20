@@ -30,3 +30,8 @@ Para simplificar el movimiento, aprovecho que el robot es holonómico: primero l
 
 Finalmente, una máquina de estados organiza la recogida y el depósito de las seis estanterías. Sus posiciones se almacenan en una lista para reutilizar el mismo procedimiento.
 Además, actualizo el mapa al recoger y depositar cada estantería para que las siguientes planificaciones tengan en cuenta los cambios del entorno.
+
+<video width="640" height="360" controls>
+  <source src="video/expansion_muros.mp4" type="video/mp4">
+  Tu navegador no soporta el video.
+</video>
