@@ -40,18 +40,25 @@ Además, actualizo el mapa al recoger y depositar cada estantería para que las 
 
 ## 4. Apartado (b): Geometría del robot y transporte de estanterías
 
-Respecto al apartado anterior, la estructura general del programa apenas cambia. Se mantiene la planificación con OMPL y la máquina de estados, pero se amplía la comprobación de colisiones para tener en cuenta la geometría del robot y si está transportando una estantería.
+Respecto al apartado anterior, la estructura general del programa apenas cambia.
+Se mantiene la planificación con OMPL y la máquina de estados, pero se amplía la comprobación de colisiones para tener en cuenta la geometría del robot y si está transportando una estantería.
 
-Ahora `isStateValid` comprueba la colisión de un rectángulo orientado según el ángulo del robot. Sus dimensiones dependen de si lleva una estantería: sin ella se utiliza la geometría del robot y, al recogerla, se considera la geometría de la carga.
+Ahora `isStateValid` comprueba la colisión de un rectángulo orientado según el ángulo del robot.
+Sus dimensiones dependen de si lleva una estantería: sin ella se utiliza la geometría del robot y, al recogerla, se considera la geometría de la carga.
 
-Hay una discrepancia entre el enunciado y el modelo URDF/Xacro: el ejercicio establece unas dimensiones de 30 × 30 cm, mientras que el modelo presenta una plataforma de 55 × 55 cm. Finalmente utilizo unas dimensiones de 0,7 × 0,7 m para la planificación. Esta decisión se debe a que inicialmente no tuve en cuenta las ruedas ni un margen adicional para facilitar las maniobras y absorber pequeños errores de movimiento.
+Hay una discrepancia entre el enunciado y el modelo URDF/Xacro: el ejercicio establece unas dimensiones de 30 × 30 cm, mientras que el modelo presenta una plataforma de 55 × 55 cm.
+Finalmente utilizo unas dimensiones de 0,7 × 0,7 m para la planificación.
+Esta decisión se debe a que inicialmente no tuve en cuenta las ruedas ni un margen adicional para facilitar las maniobras y absorber pequeños errores de movimiento.
 
-Para la estantería, considero unas dimensiones aproximadas de 1,85 × 0,80 m (`PALLET_LENGTH` y `PALLET_WIDTH`). También utilizo un margen de 2,4 m (`PALLET_HEIGHT_MARGIN`) para actualizar el mapa al recogerla, aunque en la práctica reduzco esta zona a 1,8 m (`PALLET_WIDTH_MARGIN`).
+Para la estantería, considero unas dimensiones aproximadas de 1,85 × 0,80 m (`PALLET_LENGTH` y `PALLET_WIDTH`).
+También utilizo un margen de 2,4 m (`PALLET_HEIGHT_MARGIN`) para actualizar el mapa al recogerla, aunque en la práctica reduzco esta zona a 1,8 m (`PALLET_WIDTH_MARGIN`).
 
-Por último, el mapa se actualiza según la situación de la carga: al recoger una estantería se elimina su zona de obstáculos y, al depositarla, se incorporan sus patas al mapa. Así, las siguientes planificaciones tienen en cuenta los cambios del entorno.
+Por último, el mapa se actualiza según la situación de la carga: al recoger una estantería se elimina su zona de obstáculos y, al depositarla, se incorporan sus patas al mapa.
+Así, las siguientes planificaciones tienen en cuenta los cambios del entorno.
 
 
-En el segundo vídeo muestro una prueba para comprobar que el análisis de geometría funciona correctamente: al intentar colocar todas las estanterías en horizontal, algunas colisionarían entre sí. OMPL detecta estas colisiones y evita generar una ruta que permita realizar esa disposición.
+En el segundo vídeo muestro una prueba para comprobar que el análisis de geometría funciona correctamente:
+al intentar colocar todas las estanterías en horizontal, algunas colisionarían entre sí. OMPL detecta estas colisiones y evita generar una ruta que permita realizar esa disposición.
 
 > NOTA: videos acelerados x4
 
@@ -59,3 +66,36 @@ En el segundo vídeo muestro una prueba para comprobar que el análisis de geome
   <source src="video/holonomica.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
+
+### 5. Apartado (c): Robot con geometría Ackermann
+
+En este apartado el cambio principal es adaptar la planificación y el controlador a las restricciones de movimiento del robot Ackermann.
+El desarrollo fue progresivo: primero probé únicamente movimientos hacia delante y, posteriormente, incorporé la marcha atrás mediante `ReedsSheppStateSpace`,
+que permite planificar trayectorias con cambios de sentido. También probé `Dubins`, que solo permite avanzar.
+
+Inicialmente desarrollé un controlador que eliminaba algunos bucles (*loops*) de las rutas para simplificar el movimiento.
+Sin embargo, al refinar el generador de trayectorias, esta solución terminó complicando el seguimiento, ya que no siempre interpretaba correctamente los cambios de dirección.
+Finalmente, implementé un seguimiento basado en *Pure Pursuit*, que utiliza un punto de anticipación para calcular la curvatura y ajustar la velocidad y el giro,
+teniendo en cuenta los cambios entre avance y retroceso.
+
+Para la planificación se utiliza la geometría de la carga, con un *footprint* de `1.85 × 0.80 m`.
+El radio mínimo de giro viene determinado por la distancia entre ejes y el ángulo máximo de dirección:
+
+\[
+R_{\min}=\frac{0.488}{\tan(0.64)}
+\]
+
+Sin embargo, no he conseguido afinar completamente el control de retroceso.
+Esto, junto con los errores de seguimiento, me ha llevado a aumentar el tamaño considerado en los cálculos geométricos para disponer de más margen de seguridad.
+
+Otro problema aparece al depositar las estanterías: al girarse durante la simulación, pueden provocar colisiones con el robot o con otras estanterías.
+En este sentido, he seguido la indicación del profesor:
+*«para simplificar podéis eliminarla del escenario a mano una vez la habéis depositado en su posición de destino, y así dejar más espacio para las otras»*.
+
+Por estos motivos, también he aumentado el radio de giro utilizado por el planificador respecto al mínimo teórico:
+
+```python
+MIN_TURNING_RADIUS = (WHEEL_BASE / math.tan(STEERING_LIMIT)) + 1.0
+```
+
+Este margen adicional busca generar trayectorias más amplias y facilitar su seguimiento, aunque supone una aproximación conservadora respecto a las capacidades reales del robot.
