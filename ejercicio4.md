@@ -102,6 +102,11 @@ Este margen adicional busca generar trayectorias más amplias y facilitar su seg
 
 > NOTA: video acelerado x4
 
+<video width="640" height="360" controls>
+  <source src="video/ackerman.mp4" type="video/mp4">
+  Tu navegador no soporta el video.
+</video>
+
 ### 6. Revisión de la estructura del código
 
 A lo largo de los distintos apartados he mantenido prácticamente la estructura inicial del programa. 
