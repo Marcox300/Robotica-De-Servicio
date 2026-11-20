@@ -100,6 +100,8 @@ MIN_TURNING_RADIUS = (WHEEL_BASE / math.tan(STEERING_LIMIT)) + 1.0
 
 Este margen adicional busca generar trayectorias más amplias y facilitar su seguimiento, aunque supone una aproximación conservadora respecto a las capacidades reales del robot.
 
+> NOTA: video acelerado x4
+
 ### 6. Revisión de la estructura del código
 
 A lo largo de los distintos apartados he mantenido prácticamente la estructura inicial del programa. 
