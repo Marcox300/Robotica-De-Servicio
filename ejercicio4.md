@@ -57,8 +57,11 @@ Por último, el mapa se actualiza según la situación de la carga: al recoger u
 Así, las siguientes planificaciones tienen en cuenta los cambios del entorno.
 
 
-En el segundo vídeo muestro una prueba para comprobar que el análisis de geometría funciona correctamente:
+En esta imagen muestro una prueba para comprobar que el análisis de geometría funciona correctamente:
 al intentar colocar todas las estanterías en horizontal, algunas colisionarían entre sí. OMPL detecta estas colisiones y evita generar una ruta que permita realizar esa disposición.
+
+<img width="948" height="883" alt="comprobador" src="https://github.com/user-attachments/assets/6ff51a65-c2b7-4712-ac04-79fde31afc5d" />
+
 
 > **NOTA:** videos acelerados x4
 
