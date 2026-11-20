@@ -149,6 +149,8 @@ Se ha fijado en 10 segundos para dar a OMPL un margen suficiente para explorar e
 En el apartado (c), si transcurre ese tiempo sin encontrar una solución, se vuelve a iniciar la planificación, permitiendo nuevos intentos hasta encontrar una ruta válida.
 De esta forma, se evita descartar una planificación demasiado pronto, aunque no se garantiza que siempre se encuentre una solución.
 
+Además, OMPL utiliza procesos aleatorios durante la exploración, por lo que cada ejecución puede generar árboles de búsqueda y trayectorias diferentes. Esto ha dificultado el análisis de errores, ya que los fallos no siempre son reproducibles: una ruta que no se encuentra en una ejecución puede aparecer en la siguiente. Como consecuencia, resulta más complicado aislar los problemas y evaluar los cambios realizados.
+
 ### 8. Posibles mejoras futuras
 
 Como posibles mejoras, considero necesario seguir trabajando en los siguientes aspectos:
