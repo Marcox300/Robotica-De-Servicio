@@ -36,7 +36,7 @@ Además, actualizo el mapa al recoger y depositar cada estantería para que las 
   Tu navegador no soporta el video.
 </video>
 
-> NOTA: video acelerado x4
+> **NOTA:** video acelerado x4
 
 ## 4. Apartado (b): Geometría del robot y transporte de estanterías
 
@@ -60,7 +60,7 @@ Así, las siguientes planificaciones tienen en cuenta los cambios del entorno.
 En el segundo vídeo muestro una prueba para comprobar que el análisis de geometría funciona correctamente:
 al intentar colocar todas las estanterías en horizontal, algunas colisionarían entre sí. OMPL detecta estas colisiones y evita generar una ruta que permita realizar esa disposición.
 
-> NOTA: videos acelerados x4
+> **NOTA:** videos acelerados x4
 
 <video width="640" height="360" controls>
   <source src="video/holonomica.mp4" type="video/mp4">
@@ -100,7 +100,9 @@ MIN_TURNING_RADIUS = (WHEEL_BASE / math.tan(STEERING_LIMIT)) + 1.0
 
 Este margen adicional busca generar trayectorias más amplias y facilitar su seguimiento, aunque supone una aproximación conservadora respecto a las capacidades reales del robot.
 
-> NOTA: video acelerado x4
+> **NOTA:** Vídeo acelerado x4. Durante las pruebas también tuve problemas con la recogida de las estanterías.
+> La última no llega a recogerse porque OMPL no conseguía encontrar una solución válida para planificar la ruta hasta ella.
+> Inicialmente había establecido un número limitado de intentos de planificación; posteriormente eliminé ese límite para permitir que el planificador siguiera buscando una solución.
 
 <video width="640" height="360" controls>
   <source src="video/ackerman.mp4" type="video/mp4">
@@ -141,6 +143,11 @@ Por otro lado, inicialmente el enunciado proponía utilizar el sensor láser par
 Su utilización habría permitido detectar mejor la posición real de las estanterías y actualizar el mapa con mayor precisión, especialmente después de depositarlas.
 Al no haber implementado esta funcionalidad, he asumido que las posiciones de depósito y las dimensiones consideradas son correctas.
 Esto limita la precisión del mapa y hace que la planificación dependa de que la simulación se comporte de acuerdo con estas estimaciones.
+
+También es importante el parámetro `PLANNING_TIME = 10.0`, que establece el tiempo mínimo que se dedica a cada intento de planificación.
+Se ha fijado en 10 segundos para dar a OMPL un margen suficiente para explorar el espacio de estados y tratar de encontrar una solución válida.
+En el apartado (c), si transcurre ese tiempo sin encontrar una solución, se vuelve a iniciar la planificación, permitiendo nuevos intentos hasta encontrar una ruta válida.
+De esta forma, se evita descartar una planificación demasiado pronto, aunque no se garantiza que siempre se encuentre una solución.
 
 ### 8. Posibles mejoras futuras
 
