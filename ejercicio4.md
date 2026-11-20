@@ -35,3 +35,27 @@ Además, actualizo el mapa al recoger y depositar cada estantería para que las 
   <source src="video/expansion_muros.mp4" type="video/mp4">
   Tu navegador no soporta el video.
 </video>
+
+> NOTA: video acelerado x4
+
+## 4. Apartado (b): Geometría del robot y transporte de estanterías
+
+Respecto al apartado anterior, la estructura general del programa apenas cambia. Se mantiene la planificación con OMPL y la máquina de estados, pero se amplía la comprobación de colisiones para tener en cuenta la geometría del robot y si está transportando una estantería.
+
+Ahora `isStateValid` comprueba la colisión de un rectángulo orientado según el ángulo del robot. Sus dimensiones dependen de si lleva una estantería: sin ella se utiliza la geometría del robot y, al recogerla, se considera la geometría de la carga.
+
+Hay una discrepancia entre el enunciado y el modelo URDF/Xacro: el ejercicio establece unas dimensiones de 30 × 30 cm, mientras que el modelo presenta una plataforma de 55 × 55 cm. Finalmente utilizo unas dimensiones de 0,7 × 0,7 m para la planificación. Esta decisión se debe a que inicialmente no tuve en cuenta las ruedas ni un margen adicional para facilitar las maniobras y absorber pequeños errores de movimiento.
+
+Para la estantería, considero unas dimensiones aproximadas de 1,85 × 0,80 m (`PALLET_LENGTH` y `PALLET_WIDTH`). También utilizo un margen de 2,4 m (`PALLET_HEIGHT_MARGIN`) para actualizar el mapa al recogerla, aunque en la práctica reduzco esta zona a 1,8 m (`PALLET_WIDTH_MARGIN`).
+
+Por último, el mapa se actualiza según la situación de la carga: al recoger una estantería se elimina su zona de obstáculos y, al depositarla, se incorporan sus patas al mapa. Así, las siguientes planificaciones tienen en cuenta los cambios del entorno.
+
+
+En el segundo vídeo muestro una prueba para comprobar que el análisis de geometría funciona correctamente: al intentar colocar todas las estanterías en horizontal, algunas colisionarían entre sí. OMPL detecta estas colisiones y evita generar una ruta que permita realizar esa disposición.
+
+> NOTA: videos acelerados x4
+
+<video width="640" height="360" controls>
+  <source src="video/holonomica.mp4" type="video/mp4">
+  Tu navegador no soporta el video.
+</video>
